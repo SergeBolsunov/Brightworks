@@ -1,0 +1,89 @@
+﻿@model IEnumerable<BrightWorks.Models.EmployeeCheckIn>
+
+@{
+    var CheckInList = Model.ToList();
+    ViewBag.Title = "Index";
+}
+
+<h2>Index</h2>
+
+<p>
+    @Html.ActionLink("Create New", "Create")
+</p>
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.Usertime)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Latitude)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Longitude)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Employee.FullName)
+        </th>
+        <th></th>
+    </tr>
+
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Usertime)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Latitude)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Longitude)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Employee.FullName)
+            </td>
+            <td>
+
+                @Html.ActionLink("Details", "Details", new { id = item.EID })
+
+            </td>
+        </tr>
+    }
+
+</table>
+<div id="map" style="width:100%;height:500px"></div>
+@section scripts
+    {
+<script>
+  function myMap() {
+  var bounds = new google.maps.LatLngBounds();
+  var myCenter = new google.maps.LatLng(51.508742,-0.120850);
+  var mapCanvas = document.getElementById("map");
+  var mapOptions = {center: myCenter, zoom: 5};
+  var map = new google.maps.Map(mapCanvas, mapOptions);
+  //var marker = new google.maps.Marker({position:myCenter});
+  //marker.setMap(map);
+     
+  @for(int z = 0; z < CheckInList.Count; z++)
+  {
+
+      BrightWorks.Models.EmployeeCheckIn CurrentPing = CheckInList[z];
+      if(CurrentPing.Latitude == null || CurrentPing.Longitude == null)
+      {
+          continue;
+      }
+
+      <text>
+      var Spot = new google.maps.LatLng(@CurrentPing.Latitude, @CurrentPing.Longitude)
+      var newMarker = new google.maps.Marker({ position: Spot , label: "@CurrentPing.Employee.FullName - @CurrentPing.Usertime.ToShortTimeString()" })
+      newMarker.setMap(map);
+      bounds.extend(Spot)
+      </text>
+
+  }
+      map.fitBounds(bounds);
+}
+</script>
+
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCk2_TazaZHUoC0oSfSt7nWtxkaBrHIcuk&callback=myMap"></script>
+    }

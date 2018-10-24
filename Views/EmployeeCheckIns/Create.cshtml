@@ -1,0 +1,51 @@
+﻿@model BrightWorks.Models.EmployeeCheckIn
+
+@{
+    ViewBag.Title = "Create";
+}
+
+<h2>Create</h2>
+
+
+@using (Html.BeginForm()) 
+{
+    @Html.AntiForgeryToken()
+    
+<div class="form-horizontal">
+    <h4>EmployeeCheckIn</h4>
+    <hr />
+    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+
+    @Html.HiddenFor(model => model.Latitude)
+
+
+    @Html.HiddenFor(model => model.Longitude)
+  
+
+    <div class="form-group">
+        <div class="col-md-offset-2 col-md-10">
+            <input type="submit" id="Submit" value="Create" class="btn btn-default" disabled />
+        </div>
+    </div>
+</div>
+}
+
+<div>
+    @Html.ActionLink("Back to List", "Index")
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+<script type="text/javascript">
+navigator.geolocation.getCurrentPosition(function(position) {
+    var Lat = document.getElementById("Latitude")
+    Lat.value = position.coords.latitude
+    var Longi = document.getElementById("Longitude")
+    Longi.value = position.coords.longitude
+
+    var Submit = document.getElementById("Submit");
+    Submit.removeAttribute("disabled")
+  });
+</script>
+}
